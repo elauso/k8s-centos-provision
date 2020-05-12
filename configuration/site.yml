@@ -1,0 +1,11 @@
+---
+# This playbook set full provision for server
+
+- name: Provision
+  hosts: localhost
+  remote_user: root
+  become: true
+  roles:
+    - ssh
+    - terraform
+    - docker

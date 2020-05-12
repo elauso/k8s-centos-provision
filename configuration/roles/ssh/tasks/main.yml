@@ -1,0 +1,46 @@
+---
+# This playbook will install ssh packages, create devops setting ssh public key permission (load from authorized_keys file)
+# and configure settings for sshd.
+
+- name: Install ssh packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - openssh-server
+    - openssh-clients
+
+- name: Add devops user
+  user:
+    name: "{{ devops_user }}"
+    shell: /bin/bash
+    password: "{{ devops_password }}"
+
+- name: Add devops user to the sudoers
+  copy:
+    dest: "/etc/sudoers.d/devops"
+    content: "devops  ALL=(ALL)  NOPASSWD: ALL"
+
+- name: Set ssh authorized keys
+  authorized_key: 
+    user=devops 
+    key="{{ lookup('file', 'authorized_keys') }}" 
+    state=present
+
+- name: Disable password authentication
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    regexp='^PasswordAuthentication'
+    line="PasswordAuthentication no"
+    state=present
+    backup=yes
+
+- name: Disable root login
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    regexp='^PermitRootLogin'
+    line="PermitRootLogin no"
+    state=present
+    backup=yes
+  notify:
+    - restart ssh

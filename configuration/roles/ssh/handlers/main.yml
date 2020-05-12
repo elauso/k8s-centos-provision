@@ -1,0 +1,7 @@
+---
+# Handler to handle ssh configure
+
+- name: restart ssh
+  service:
+    name=sshd
+    state=restarted

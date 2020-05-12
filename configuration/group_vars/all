@@ -1,0 +1,13 @@
+---
+
+# SSH
+devops_user: devops
+devops_password: aae62b5f0497c4a445ce2b4d4593b070702f93a55aba98eb54e84e1faaeb5f1d # 'devops' - sha256
+
+# Docker
+centos_docker_ce_repository: 'https://download.docker.com/linux/centos/docker-ce.repo'
+containerd_package: 'containerd.io-1.2.6*x86_64'
+containerd_package_repository: 'https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm'
+pip_executable: pip3.6
+docker_compose_package_repository: 'https://github.com/docker/compose/releases/download/1.25.0/docker-compose-Linux-x86_64'
+
