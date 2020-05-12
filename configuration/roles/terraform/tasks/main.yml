@@ -14,3 +14,17 @@
     src: https://releases.hashicorp.com/terraform/0.12.17/terraform_0.12.17_linux_amd64.zip
     dest: /usr/local/bin
     remote_src: yes
+
+- name: Create terraform plugins directory
+  file:
+    path: orchestration/k8s-cluster/terraform.d/plugins/linux_amd64
+    state: directory
+
+- name: Download rke provider plugin
+  unarchive:
+    src: https://github.com/rancher/terraform-provider-rke/releases/download/1.0.0/terraform-provider-rke-linux-amd64.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Move to terraform plugins folder
+  command: mv /tmp/terraform-provider-rke-9c95410/terraform-provider-rke orchestration/k8s-cluster/terraform.d/plugins/linux_amd64/terraform-provider-rke_v1.0.0
