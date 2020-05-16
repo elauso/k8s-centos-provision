@@ -8,9 +8,3 @@ then
 fi
  
 ansible-playbook configuration/site.yml
-
-cd orchestration/k8s-cluster
-
-terraform init && terraform apply
-
-cd -

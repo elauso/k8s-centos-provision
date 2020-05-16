@@ -4,6 +4,9 @@
 devops_user: devops
 devops_password: aae62b5f0497c4a445ce2b4d4593b070702f93a55aba98eb54e84e1faaeb5f1d # 'devops' - sha256
 
+# Terraform
+terraform_release_url: 'https://releases.hashicorp.com/terraform/0.12.17/terraform_0.12.17_linux_amd64.zip'
+
 # Docker
 centos_docker_ce_repository: 'https://download.docker.com/linux/centos/docker-ce.repo'
 containerd_package: 'containerd.io-1.2.6*x86_64'
@@ -11,3 +14,9 @@ containerd_package_repository: 'https://download.docker.com/linux/centos/7/x86_6
 pip_executable: pip3.6
 docker_compose_package_repository: 'https://github.com/docker/compose/releases/download/1.25.0/docker-compose-Linux-x86_64'
 
+# Kubernetes
+k8s_repository_url: 'https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64'
+k8s_repository_keys: 'https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg'
+k8s_pod_network_cidr: '192.168.0.0/16'
+k8s_calico_cni_url: 'https://docs.projectcalico.org/v3.11/manifests/calico.yaml'
+k8s_config_path: '/etc/kubernetes/admin.conf'

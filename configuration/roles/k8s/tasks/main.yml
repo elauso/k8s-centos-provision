@@ -1,0 +1,69 @@
+---
+# This playbook will install and configure a single node kubernetes cluster
+
+- name: Add the br_netfilter module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Add kubernetes repository
+  yum_repository:
+    name: kubernetes
+    description: Add kubernetes repository
+    baseurl: "{{ k8s_repository_url }}"
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey: "{{ k8s_repository_keys }}"
+
+- name: Enable SELinux
+  selinux:
+    policy: targeted
+    state: enforcing
+
+- name: Put SELinux in permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Install kubernetes packages
+  yum:
+    name: "{{ packages }}"
+    disable_excludes: kubernetes
+  vars:
+    packages:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: Enable service kubelet, and not touch the state
+  service:
+    name: kubelet
+    enabled: yes
+
+- name: Disable SWAP since kubernetes can't work with swap enabled
+  shell: |
+    swapoff -a
+
+- name: Start kubeadm
+  shell: | 
+    kubeadm init --pod-network-cidr={{ k8s_pod_network_cidr }}
+
+- name: Setup configuration for root user
+  shell: |
+    mkdir -p $HOME/.kube
+    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    chown $(id -u):$(id -g) $HOME/.kube/config
+
+- name: Setup configuration for devops user
+  shell: |
+    mkdir -p $(eval echo ~devops)/.kube
+    cp -i /etc/kubernetes/admin.conf $(eval echo ~devops)/.kube/config
+    chown devops:devops $(eval echo ~devops)/.kube/config
+
+- name: Install calico CNI
+  shell: |
+    kubectl apply -f {{ k8s_calico_cni_url }}
+
+- name: Set control plane to schedule pods (single node)
+  shell: kubectl taint nodes --all node-role.kubernetes.io/master-
