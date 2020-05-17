@@ -5,6 +5,7 @@
   hosts: localhost
   remote_user: root
   become: true
+  any_errors_fatal: true
   roles:
     - ssh
     - terraform
