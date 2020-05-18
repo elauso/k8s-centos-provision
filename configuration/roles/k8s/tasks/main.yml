@@ -53,6 +53,7 @@
     regexp='^( +swap$)'
     line="#\1"
     backup=yes
+  when: kubernetes_installed is changed
 
 - name: Start kubeadm
   shell: | 

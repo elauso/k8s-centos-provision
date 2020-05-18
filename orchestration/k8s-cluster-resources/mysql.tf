@@ -1,4 +1,3 @@
-
 resource "kubernetes_service" "mysql-service" {
   metadata {
     name = "mysql-service"
@@ -9,6 +8,7 @@ resource "kubernetes_service" "mysql-service" {
     }
     port {
       port        = 3306
+      target_port = "${var.mysql_port}"
     }
     cluster_ip = "None"
   }
@@ -43,11 +43,11 @@ resource "kubernetes_deployment" "mysql-deployment" {
       spec {
         container {
           name  = "mysql"
-          image = "mysql:5.6"
+          image = "${var.mysql_image}"
           
           env {
             name = "MYSQL_ROOT_PASSWORD"
-            value = "root" # move to k8s secret
+            value = "${var.mysql_root_password}" # move to k8s secret
           }
 
           port {
@@ -81,7 +81,7 @@ resource "kubernetes_persistent_volume_claim" "mysql-pv-claim" {
     access_modes = ["ReadWriteOnce"]
     resources {
       requests = {
-        storage = "20Gi"
+        storage = "${var.mysql_pv_storage}"
       }
     }
     volume_name = "${kubernetes_persistent_volume.mysql-pv-volume.metadata.0.name}"
@@ -95,12 +95,12 @@ resource "kubernetes_persistent_volume" "mysql-pv-volume" {
   spec {
     storage_class_name = "manual"
     capacity = {
-      storage = "20Gi"
+      storage = "${var.mysql_pv_storage}"
     }
     access_modes = ["ReadWriteOnce"]
     persistent_volume_source {
-      vsphere_volume {
-        volume_path = "/mnt/data"
+      host_path {
+        path = "${var.mysql_pv_path}"
       }
     }
   }

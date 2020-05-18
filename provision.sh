@@ -20,6 +20,6 @@ if [ "$execute_ansible" = true ] ; then
   ansible-playbook configuration/site.yml
 fi
 
-cd orchestration/k8s-cluster-resource
+cd orchestration/k8s-cluster-resources
 terraform init && terraform apply -auto-approve
 cd -
