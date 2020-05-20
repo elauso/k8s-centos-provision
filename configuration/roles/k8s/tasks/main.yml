@@ -79,7 +79,17 @@
     kubectl apply -f {{ k8s_calico_cni_url }}
   when: kubernetes_installed is changed
 
+- name: Install dashboard UI
+  shell: |
+    kubectl apply -f {{ k8s_dashboard_ui_url }}
+  when: kubernetes_installed is changed
+
 - name: Set control plane to schedule pods (single node)
   shell: |
     kubectl taint nodes --all node-role.kubernetes.io/master-
+  when: kubernetes_installed is changed
+
+- name: Start dashboard UI
+  shell: |
+    kubectl proxy --address='0.0.0.0' --accept-hosts='^*$' &
   when: kubernetes_installed is changed

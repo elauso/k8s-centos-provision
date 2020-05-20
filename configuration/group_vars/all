@@ -19,4 +19,5 @@ k8s_repository_url: 'https://packages.cloud.google.com/yum/repos/kubernetes-el7-
 k8s_repository_keys: 'https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg'
 k8s_pod_network_cidr: '192.168.0.0/16'
 k8s_calico_cni_url: 'https://docs.projectcalico.org/v3.11/manifests/calico.yaml'
+k8s_dashboard_ui_url: 'https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml'
 k8s_config_path: '/etc/kubernetes/admin.conf'
