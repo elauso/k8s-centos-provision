@@ -1,3 +1,8 @@
+variable "server_ip" {
+  description = "Cluster node ip"
+  default     = ""
+}
+
 variable "mysql_port" {
   description = "Mysql forward port"
   default     = 3306

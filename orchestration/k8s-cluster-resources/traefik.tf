@@ -1,32 +1,50 @@
-resource "kubernetes_service_account" "traefik-service-account" {
+resource "kubernetes_service" "traefik-service" {
   metadata {
-    name = "${kubernetes_daemonset.traefik_daemonset.metadata.0.name}"
-    namespace = "${kubernetes_daemonset.traefik_daemonset.metadata.0.namespace}"
+    name = "traefik-ingress-service"
+    namespace = "kube-system"
+  }
+  spec {
+    selector = {
+      k8s-app = "traefik-ingress-lb"
+    }
+    port {
+      protocol = "TCP"
+      port = "80"
+      target_port = "${var.traefik_http_port}"
+      name = "web"
+    }
+    port {
+      protocol = "TCP"
+      port = "8080"
+      target_port = "${var.traefik_admin_port}"
+      name = "admin"
+    }
+    type = "NodePort"
   }
 }
 
-resource "kubernetes_daemonset" "traefik_daemonset" {
+resource "kubernetes_daemonset" "traefik-daemonset" {
   metadata {
     name      = "traefik-ingress-controller"
     namespace = "kube-system"
     labels = {
-      k8s-app = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
+      k8s-app = "traefik-ingress-lb"
     }
   }
 
   spec {
     selector {
       match_labels = {
-        k8s-app = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
-        name = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
+        k8s-app = "traefik-ingress-lb"
+        name = "traefik-ingress-lb"
       }
     }
 
     template {
       metadata {
         labels = {
-          k8s-app = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
-          name = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
+          k8s-app = "traefik-ingress-lb"
+          name = "traefik-ingress-lb"
         }
       }
 
@@ -63,24 +81,9 @@ resource "kubernetes_daemonset" "traefik_daemonset" {
   }
 }
 
-resource "kubernetes_service" "traefik-service" {
+resource "kubernetes_service_account" "traefik-service-account" {
   metadata {
-    name = "traefik-ingress-service"
-    namespace = "${kubernetes_daemonset.traefik_daemonset.metadata.0.namespace}"
-  }
-  spec {
-    selector = {
-      k8s-app = "${kubernetes_daemonset.traefik_daemonset.spec.container.0.namespace}"
-    }
-    port {
-      protocol = "TCP"
-      port = "${var.traefik_http_port}"
-      name = "web"
-    }
-    port {
-      protocol = "TCP"
-      port = "${var.traefik_admin_port}"
-      name = "admin"
-    }
+    name = "traefik-ingress-controller"
+    namespace = "kube-system"
   }
 }

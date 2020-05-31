@@ -1,3 +1,6 @@
+# Cluster node
+server_ip = "192.168.11.11"
+
 # Mysql
 mysql_image = "mysql:5.6"
 mysql_root_password = "root"
